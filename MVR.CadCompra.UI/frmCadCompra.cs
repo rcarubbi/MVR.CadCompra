@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MVR.CadCompra.BLL;
 
@@ -12,24 +8,24 @@ namespace MVR.CadCompra.UI
 {
     public partial class frmCadCompra : FormFilho
     {
+        private ItemCompra _itemSelecionado;
+        private List<ItemCompra> _itens;
+
+        private List<Produto> _produtos;
+
         public frmCadCompra()
         {
             InitializeComponent();
             LimparCampos(true, true);
         }
 
-        private List<Produto> _produtos;
-        private List<ItemCompra> _itens;
-        private ItemCompra _itemSelecionado;
-
         private void frmCadCompra_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.Principal.CadCompra = null;
+            Principal.CadCompra = null;
         }
 
         private void frmCadCompra_Load(object sender, EventArgs e)
         {
-
         }
 
         private void LimparCampos(bool limparDadosDaCompra, bool limparItens)
@@ -40,12 +36,12 @@ namespace MVR.CadCompra.UI
                 txtCodigoProcesso.Text = string.Empty;
             }
 
-            _produtos = Produto.Listar(new Produto() { Ativo = true });
+            _produtos = Produto.Listar(new Produto {Ativo = true});
             AtualizarComboProduto();
             txtPreco.Text =
                 txtQuantidade.Text =
-                txtProdutoFiltro.Text =
-                string.Empty;
+                    txtProdutoFiltro.Text =
+                        string.Empty;
             rdbCodigoEntrada.Checked = true;
 
             if (limparItens)
@@ -53,30 +49,23 @@ namespace MVR.CadCompra.UI
                 _itens = new List<ItemCompra>();
                 AtualizarItens();
             }
-
         }
 
         private void btnFiltrar_Click(object sender, EventArgs e)
         {
-            _produtos = Produto.Listar(new Produto() { Ativo = true });
+            _produtos = Produto.Listar(new Produto {Ativo = true});
             if (rdbCodigoEntrada.Checked)
-            {
                 _produtos = _produtos.Where(p => p.CodigoEntrada == txtProdutoFiltro.Text).ToList();
-            }
             else if (rdbCodigoSaida.Checked)
-            {
                 _produtos = _produtos.Where(p => p.CodigoSaida == txtProdutoFiltro.Text).ToList();
-            }
             else
-            {
                 _produtos = _produtos.Where(p => p.Descricao.Contains(txtProdutoFiltro.Text)).ToList();
-            }
             AtualizarComboProduto();
         }
 
         private void btnNovo_Click(object sender, EventArgs e)
         {
-            this.Principal.AbrirCadastroProduto(null, sender);
+            Principal.AbrirCadastroProduto(null, sender);
         }
 
         public void SelecionarProduto(Produto p)
@@ -84,7 +73,6 @@ namespace MVR.CadCompra.UI
             _produtos.Clear();
             _produtos.Add(p);
             AtualizarComboProduto();
-
         }
 
         private void AtualizarComboProduto()
@@ -99,7 +87,7 @@ namespace MVR.CadCompra.UI
         {
             try
             {
-                ItemCompra i = CarregarItem();
+                var i = CarregarItem();
                 if (_itens.Contains(i, ItemCompra.PesquisaPorCodigoEntrada))
                     throw new ApplicationException("Este produto já foi adicionado");
 
@@ -117,15 +105,31 @@ namespace MVR.CadCompra.UI
         {
             gdvItensCompra.DataSource = null;
 
-            var itens = from i in _itens select new { CodigoEntrada = i.Produto.CodigoEntrada, Produto = i.Produto.Descricao, Quantidade = i.Quantidade, Preço = i.Preco, ValorTotal = i.Preco * i.Quantidade };
-            var total = from i in _itens select new { CodigoEntrada = "", Produto = "Total", Quantidade = _itens.Sum(item => item.Quantidade), Preço = 0m, ValorTotal = _itens.Sum(item => item.Preco * item.Quantidade) };
+            var itens = from i in _itens
+                select new
+                {
+                    i.Produto.CodigoEntrada,
+                    Produto = i.Produto.Descricao,
+                    i.Quantidade,
+                    Preço = i.Preco,
+                    ValorTotal = i.Preco * i.Quantidade
+                };
+            var total = from i in _itens
+                select new
+                {
+                    CodigoEntrada = "",
+                    Produto = "Total",
+                    Quantidade = _itens.Sum(item => item.Quantidade),
+                    Preço = 0m,
+                    ValorTotal = _itens.Sum(item => item.Preco * item.Quantidade)
+                };
             gdvItensCompra.DataSource = itens.Union(total).ToList();
             gdvItensCompra.CurrentCell = null;
         }
 
         private ItemCompra CarregarItem()
         {
-            ItemCompra i = new ItemCompra();
+            var i = new ItemCompra();
             try
             {
                 i.Produto = new Produto(Convert.ToInt32(cboProduto.SelectedValue));
@@ -154,7 +158,6 @@ namespace MVR.CadCompra.UI
             }
 
             return i;
-
         }
 
         private void btnRemover_Click(object sender, EventArgs e)
@@ -189,7 +192,7 @@ namespace MVR.CadCompra.UI
         {
             try
             {
-                Compra c = new Compra();
+                var c = new Compra();
                 c.AdicionarItens(_itens);
                 c.Processo = txtCodigoProcesso.Text;
                 c.Data = dtpData.Value;

@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MVR.CadCompra.BLL;
 
@@ -12,12 +7,12 @@ namespace MVR.CadCompra.UI
 {
     public partial class frmConsProduto : FormFilho
     {
+        private List<Produto> UltimaPesquisa;
+
         public frmConsProduto()
         {
             InitializeComponent();
         }
-
-        private List<Produto> UltimaPesquisa;
 
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
@@ -35,22 +30,21 @@ namespace MVR.CadCompra.UI
 
         private Produto CarregarFiltro()
         {
-            Produto produto = new Produto();
+            var produto = new Produto();
 
             produto.Codigo = string.IsNullOrEmpty(txtCodigo.Text) ? 0 : Convert.ToInt32(txtCodigo.Text);
             produto.Descricao = txtDescricao.Text;
-            produto.Ativo = (chkAtivo.CheckState == CheckState.Indeterminate) ?  (bool?)null : chkAtivo.Checked;
+            produto.Ativo = chkAtivo.CheckState == CheckState.Indeterminate ? (bool?) null : chkAtivo.Checked;
             produto.CodigoEntrada = txtCodigoEntrada.Text;
-            produto.CodigoSaida = txtCodigoSaida.Text; 
+            produto.CodigoSaida = txtCodigoSaida.Text;
             return produto;
         }
 
         private void frmConsProduto_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.Principal.ConsProduto = null;
+            Principal.ConsProduto = null;
         }
 
-         
 
         internal void AtualizarPesquisa()
         {
@@ -60,7 +54,7 @@ namespace MVR.CadCompra.UI
         private void gdvProdutos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < UltimaPesquisa.Count && e.RowIndex > -1)
-                this.Principal.AbrirCadastroProduto(UltimaPesquisa[e.RowIndex], sender);
+                Principal.AbrirCadastroProduto(UltimaPesquisa[e.RowIndex], sender);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace MVR.CadCompra.UI
 {
@@ -10,14 +6,10 @@ namespace MVR.CadCompra.UI
     {
         public FormFilho()
         {
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
         }
-        
-        public frmPrincipal Principal
-        {
-            set;
-            get;
-        }
+
+        public frmPrincipal Principal { set; get; }
 
         protected void MostrarMensagem(string mensagem)
         {

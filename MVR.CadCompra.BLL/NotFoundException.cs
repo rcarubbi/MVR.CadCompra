@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MVR.CadCompra.BLL
 {
@@ -10,15 +7,8 @@ namespace MVR.CadCompra.BLL
         public NotFoundException(Exception innerException)
             : base(innerException.Message, innerException)
         {
-            
         }
 
-        public override string Message
-        {
-            get
-            {
-                return "Registro não encontrado";
-            }
-        }
+        public override string Message => "Registro não encontrado";
     }
 }

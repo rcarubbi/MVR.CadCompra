@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MVR.CadCompra.BLL;
 
@@ -12,6 +6,19 @@ namespace MVR.CadCompra.UI
 {
     public partial class frmPrincipal : Form
     {
+        public frmPrincipal()
+        {
+            InitializeComponent();
+        }
+
+        public FormFilho CadProduto { get; set; }
+
+        public FormFilho CadCompra { get; set; }
+
+        public FormFilho ConsProduto { get; set; }
+
+        public FormFilho ConsCompra { get; set; }
+
         public void AbrirCadastroProduto(Produto produto, object sender)
         {
             if (CadProduto == null)
@@ -25,44 +32,15 @@ namespace MVR.CadCompra.UI
             {
                 if (produto != null)
                 {
-                    ((frmCadProduto)CadProduto).ExibirProduto(produto);
+                    ((frmCadProduto) CadProduto).ExibirProduto(produto);
                     CadProduto.Focus();
                 }
             }
         }
 
-        public frmPrincipal()
-        {
-            InitializeComponent();
-        }
-
-        public FormFilho CadProduto
-        {
-            get;
-            set;
-        }
-
-        public FormFilho CadCompra
-        {
-            get;
-            set;
-        }
-
-        public FormFilho ConsProduto
-        {
-            get;
-            set;
-        }
-
-        public FormFilho ConsCompra
-        {
-            get;
-            set;
-        }
-
         private void mnuCadastroProduto_Click(object sender, EventArgs e)
         {
-             AbrirCadastroProduto(null, null);
+            AbrirCadastroProduto(null, null);
         }
 
         private void mnuCadastroCompra_Click(object sender, EventArgs e)
@@ -100,15 +78,13 @@ namespace MVR.CadCompra.UI
 
         private void frmPrincipal_ResizeEnd(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Maximized;
+            WindowState = FormWindowState.Maximized;
         }
 
         private void mnuSobre_Click(object sender, EventArgs e)
         {
-            AboutBox about = new AboutBox();
+            var about = new AboutBox();
             about.ShowDialog();
         }
- 
-
     }
 }
