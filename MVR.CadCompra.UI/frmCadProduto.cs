@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Carubbi.Extensions;
 using MVR.CadCompra.BLL;
 
 namespace MVR.CadCompra.UI
@@ -98,12 +99,10 @@ namespace MVR.CadCompra.UI
         {
             var result = openFileDialog1.ShowDialog();
 
-            if (result == DialogResult.OK)
-            {
-                _caminhoImagemArquivo = openFileDialog1.FileName;
-                CopiarImagem(openFileDialog1.OpenFile(), openFileDialog1.FileName);
-                CarregarImagem();
-            }
+            if (result != DialogResult.OK) return;
+            _caminhoImagemArquivo = openFileDialog1.FileName;
+            CopiarImagem(openFileDialog1.OpenFile(), openFileDialog1.FileName);
+            CarregarImagem();
         }
 
         private void CopiarImagem(Stream stream, string sourceFilePath)
@@ -111,29 +110,11 @@ namespace MVR.CadCompra.UI
             var targetPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
                 Path.GetFileName(sourceFilePath));
             if (!File.Exists(targetPath))
-                CopyStream(stream, new FileStream(targetPath, FileMode.CreateNew));
+                stream.CopyTo(new FileStream(targetPath, FileMode.CreateNew));
             _caminhoImagemArquivo = targetPath;
         }
 
-        public static void CopyStream(Stream input, Stream output)
-        {
-            var buffer = new byte[32768];
-            while (true)
-            {
-                var read = input.Read(buffer, 0, buffer.Length);
-                if (read <= 0)
-                    break;
-                output.Write(buffer, 0, read);
-            }
-
-            input.Close();
-            output.Close();
-            input.Dispose();
-            output.Dispose();
-            input = null;
-            output = null;
-        }
-
+         
         private void CarregarImagem()
         {
             Image imagem = null;
